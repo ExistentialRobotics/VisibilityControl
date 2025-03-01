@@ -1,0 +1,394 @@
+<script src="https://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">google.load("jquery", "1.3.2");</script>
+
+<style type="text/css">
+    body {
+        font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        font-weight: 300;
+        font-size: 18px;
+        margin-left: auto;
+        margin-right: auto;
+        width: 1100px;
+    }
+
+    h1 {
+        font-weight: 300;
+    }
+
+    .disclaimerbox {
+        background-color: #eee;
+        border: 1px solid #eeeeee;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    video.header-vid {
+        height: 140px;
+        border: 1px solid black;
+        border-radius: 10px;
+    }
+
+    img.header-img {
+        height: 140px;
+        border: 1px solid black;
+        border-radius: 10px;
+    }
+
+    img.rounded {
+        border: 1px solid #eeeeee;
+        border-radius: 10px;
+    }
+
+    a:link,
+    a:visited {
+        color: #1367a7;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #208799;
+    }
+
+    td.dl-link {
+        height: 160px;
+        text-align: center;
+        font-size: 22px;
+    }
+
+    .layered-paper-big {
+        box-shadow:
+            0px 0px 1px 1px rgba(0, 0, 0, 0.35),
+            5px 5px 0 0px #fff,
+            5px 5px 1px 1px rgba(0, 0, 0, 0.35),
+            10px 10px 0 0px #fff,
+            10px 10px 1px 1px rgba(0, 0, 0, 0.35),
+            15px 15px 0 0px #fff,
+            15px 15px 1px 1px rgba(0, 0, 0, 0.35),
+            20px 20px 0 0px #fff,
+            20px 20px 1px 1px rgba(0, 0, 0, 0.35),
+            25px 25px 0 0px #fff,
+            25px 25px 1px 1px rgba(0, 0, 0, 0.35);
+        margin-left: 10px;
+        margin-right: 45px;
+    }
+
+    .layered-paper {
+        box-shadow:
+            0px 0px 1px 1px rgba(0, 0, 0, 0.35),
+            5px 5px 0 0px #fff,
+            5px 5px 1px 1px rgba(0, 0, 0, 0.35),
+            10px 10px 0 0px #fff,
+            10px 10px 1px 1px rgba(0, 0, 0, 0.35);
+        margin-top: 5px;
+        margin-left: 10px;
+        margin-right: 30px;
+        margin-bottom: 5px;
+    }
+
+    .vert-cent {
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    hr {
+        border: 0;
+        height: 1.5px;
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    }
+
+    code {
+        font-family: Consolas, "Courier New", monospace;
+        color: darkcyan;
+        background-color: #f1f1f1;
+        padding: 2px;
+        font-size: 105%;
+    }
+</style>
+
+<html>
+<head>
+    <title>Control Strategies for Pursuit-Evasion Under Occlusion</title>
+    <meta property="og:title" content="Control Strategies for Pursuit-Evasion Under Occlusion" />
+    <meta property="og:image" content="" />
+    <meta property="og:url" content="" />
+</head>
+
+<body>
+    <br>
+    <center>
+        <span style="font-size:42px">
+            Control Strategies for Pursuit-Evasion Under Occlusion
+        </span>
+    </center>
+
+    <br><br>
+    <!-- AUTHOR LIST (linked to Existential Robotics Lab) -->
+    <table align="center" width="1000px">
+        <tr>
+            <td align="center" width="200px">
+                <center>
+                    <span style="font-size:20px">
+                        <strong>
+                            <a href="https://existentialroboticslab.org" target="_blank">
+                                Minnan Zhou<sup>1</sup>
+                            </a>
+                        </strong>
+                    </span>
+                </center>
+            </td>
+            <td align="center" width="200px">
+                <center>
+                    <span style="font-size:20px">
+                        <strong>
+                            <a href="https://www.linkedin.com/in/mustafa-shaikh-716ba8140/" target="_blank">
+                                Mustafa Shaikh<sup>1</sup>
+                            </a>
+                        </strong>
+                    </span>
+                </center>
+            </td>
+            <td align="center" width="200px">
+                <center>
+                    <span style="font-size:20px">
+                        <strong>
+                            <a href="https://sites.google.com/view/vatsalyachaubey" target="_blank">
+                                Vatsalya Chaubey<sup>1</sup>
+                            </a>
+                        </strong>
+                    </span>
+                </center>
+            </td>
+            <td align="center" width="200px">
+                <center>
+                    <span style="font-size:20px">
+                        <strong>
+                            <a href="javascript:void(0)" target="_blank">
+                                Patrick Haggerty<sup>2</sup>
+                            </a>
+                        </strong>
+                    </span>
+                </center>
+            </td>
+        </tr>
+    </table>
+
+    <table align="center" width="1000px">
+        <tr>
+            <td align="center" width="200px">
+                <center>
+                    <span style="font-size:20px">
+                        <strong>
+                            <a href="https://shumon0423.github.io" target="_blank">
+                                Shumon Koga<sup>3</sup>
+                            </a>
+                        </strong>
+                    </span>
+                </center>
+            </td>
+            <td align="center" width="200px">
+                <center>
+                    <span style="font-size:20px">
+                        <strong>
+                            <a href="https://websites.umich.edu/~dpanagou/" target="_blank">
+                                Dimitra Panagou<sup>4</sup>
+                            </a>
+                        </strong>
+                    </span>
+                </center>
+            </td>
+            <td align="center" width="200px">
+                <center>
+                    <span style="font-size:20px">
+                        <strong>
+                            <a href="https://natanaso.github.io" target="_blank">
+                                Nikolay Atanasov<sup>1</sup>
+                            </a>
+                        </strong>
+                    </span>
+                </center>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <!-- AFFILIATIONS -->
+    <table align="center" width="700px">
+        <tr>
+            <td align="center" width="350px">
+                <span style="font-size:20px">
+                    <sup>1</sup>
+                    <a href="https://existentialroboticslab.org" target="_blank">
+                        Existential Robotics Lab
+                    </a>
+                    <br />
+                    University of California, San Diego
+                </span>
+            </td>
+            <td align="center" width="350px">
+                <span style="font-size:20px">
+                    <sup>2</sup>General Dynamics Mission Systems
+                </span>
+            </td>
+        </tr>
+        <tr>
+            <td align="center" width="350px">
+                <span style="font-size:20px">
+                    <sup>3</sup>Honda R&D
+                </span>
+            </td>
+            <td align="center" width="350px">
+                <span style="font-size:20px">
+                    <sup>4</sup>
+                    <a href="https://dasc-lab.github.io" target="_blank">
+                        DASC Lab
+                    </a>
+                    <br>University of Michigan
+                </span>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <!-- If relevant, you can add a line for a conference or venue. -->
+    <!-- For example:
+    <table align="center" width="700px">
+        <tr>
+            <td align="center" width="700px">
+                <span style="font-size:25px">
+                    Submitted to XYZ Conference 2024
+                </span>
+            </td>
+        </tr>
+    </table>
+    -->
+    <br>
+
+    <!-- Links to paper, arXiv, code, etc. Adjust if needed -->
+    <table align="center" width="500px">
+        <tr>
+            <td align="center" width="100px">
+                <center>
+                    <span style="font-size:20px">
+                        <a href="https://arxiv.org/pdf/2411.01321.pdf" target="_blank">[Paper]</a>
+                    </span>
+                </center>
+            </td>
+            <td align="center" width="100px">
+                <center>
+                    <span style="font-size:20px">
+                        <a href="https://arxiv.org/abs/2411.01321" target="_blank">[arXiv]</a>
+                    </span>
+                </center>
+            </td>
+            <td align="center" width="100px">
+                <center>
+                  <!-- "title" attribute shows a tooltip -->
+                  <span style="font-size:20px">
+                    <a href="javascript:void(0)" title="Code will be available by Mar 2025">[Code]</a>
+                  </span>
+                </center>
+              </td>
+            <!-- Uncomment or add more links if desired:
+            <td align="center" width="100px">
+                <center>
+                    <span style="font-size:20px">
+                        <a href="[YOUR_CODE_REPO]" target="_blank">[Code]</a>
+                    </span>
+                </center>
+            </td>
+            -->
+        </tr>
+    </table>
+
+    <br><br>
+
+    <!-- MAIN DESCRIPTION / ABSTRACT -->
+    <p style="max-width:900px; margin:auto; line-height:1.6;">
+      <strong>Abstract:</strong>  
+      This paper develops a control strategy for pursuit-evasion problems
+      in environments with occlusions. We address the challenge of a mobile pursuer
+      keeping a mobile evader within its field of view (FoV) despite line-of-sight
+      obstructions. The signed distance function (SDF) of the FoV is used to formulate
+      visibility as a control barrier function (CBF) constraint on the pursuers
+      control inputs. Similarly, obstacle avoidance is formulated as a CBF constraint
+      based on the SDF of the obstacle set. While the visibility and safety CBFs are
+      Lipschitz continuous, they are not differentiable everywhere, necessitating the
+      use of generalized gradients. To achieve non-myopic pursuit, we generate
+      reference control trajectories via a sampling-based kinodynamic planner. The
+      pursuer then tracks this reference via convex optimization under the CBF
+      constraints. We validate our approach in CARLA simulations and real-world robot
+      experiments, demonstrating successful visibility maintenance even under severe
+      occlusions and dynamic evader movements.
+    </p>
+
+    <br><hr><br>
+
+    <!-- PAPER SECTION (thumbnail, if any) -->
+    <table align="center" width="1000">
+        <center><h1>Paper</h1></center>
+        <tr>
+            <td>
+                <!-- If you have a PDF thumbnail image, place it here -->
+                <!-- Example: -->
+                <a href="https://arxiv.org/pdf/2411.01321.pdf">
+                  <center><img style="height:250px" src="combined_horizontal_0.png" /></center>
+                </a> 
+                <a href="https://arxiv.org/pdf/2411.01321.pdf">
+                    <center><img style="height:250px" src="combined_horizontal_1.png" /></center>
+                  </a> 
+                <p style="text-align:center; font-size:18px;">
+                  <em>Click
+                  <a href="https://arxiv.org/pdf/2411.01321.pdf" target="_blank">here</a>
+                  to view the PDF.</em>
+                </p>
+            </td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <!-- VIDEO SECTION -->
+    <table align="center" width="900">
+        <center><h1>Video</h1></center>
+        <table align="center" width="900px">
+            <tr>
+                <td width="600px">
+                    <center>
+                        <div class="video">
+                            <iframe
+                                width="900"
+                                height="540"
+                                src="https://www.youtube.com/embed/1xLG3Ak4Zx0"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                            ></iframe>
+                        </div>
+                    </center>
+                </td>
+            </tr>
+        </table>
+    </table>
+    <br>
+
+    <hr>
+    <br>
+
+    <!-- ACKNOWLEDGMENTS (if any) -->
+    <table align="center" width="1100px">
+        <tr>
+            <td>
+                <center>
+                    <h1>Acknowledgements</h1>
+                </center>
+                We gratefully acknowledge support from ARL DCIST CRA W911NF-17-2-0181
+                and all collaborating institutions. This webpage template follows the
+                style of our <em><a href="https://existentialrobotics.org/pages/llm-planning" target="_blank">llm-planning</a></em> project page.
+            </td>
+        </tr>
+    </table>
+
+    <br><br>
+</body>
+</html>
