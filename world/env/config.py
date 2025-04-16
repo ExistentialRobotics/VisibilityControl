@@ -1,8 +1,9 @@
 import os
-
 import yaml
+from pathlib import Path
 
-params_filename = '/home/joe/Documents/ERL/VisibilityControl/params/params_compare.yaml'
+project_root = Path(__file__).resolve().parents[2]
+params_filename = os.path.join(project_root, 'params/params_compare.yaml')
 
 assert os.path.exists(params_filename)
 with open(os.path.join(params_filename)) as f:
@@ -29,10 +30,9 @@ alpha_fov = params['QP']['alpha_fov']
 alpha_obs = params['QP']['alpha_obs']
 obstacle_path = params['obstacle_path']
 make_rounded = params['make_rounded']
-map_path = params['map_path']
+map_file_path = os.path.join(project_root, 'resources', params['map_path'])
 use_autodiff = params['use_autodiff']
 sig_k = params['sig_k']
-map_file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, map_path))
 obs_incl_cond = params['QP']['obs_incl_cond']
 use_fov_slack = params['QP']['use_fov_slack']
 slack_delta = params['QP']['slack_delta']

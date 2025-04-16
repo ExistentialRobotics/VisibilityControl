@@ -7,11 +7,14 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import yaml
+from pathlib import Path
+
 
 from pursuer.controller.cbf_qp import CbfController
 # from pursuer.planner.planner_main import Planner
 from world.env.simple_env import Environment
 
+project_root = Path(__file__).resolve().parent
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 parser = argparse.ArgumentParser()
 args = parser.parse_args()
@@ -73,5 +76,4 @@ def run_sim(params_filename):
 
 
 if __name__ == '__main__':
-    run_sim(
-        params_filename='/home/joe/Documents/ERL/VisibilityControl/params/params_compare.yaml')
+    run_sim(params_filename=os.path.join(project_root, 'params/params_compare.yaml'))

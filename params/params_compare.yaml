@@ -6,7 +6,7 @@ dt: 0.1
 use_planner: False
 
 # change the name of the map after map/
-map_path: "/home/joe/Documents/ERL/VisibilityControl/world/env/maps/carla_map.png"
+map_path: "carla_map.png"
 obstacle_path : "data/obstacles_carla.npy"
 
 # diagonal penalty terms for R matrix in control norm objective

@@ -1,3 +1,4 @@
+import os
 import pickle
 import time
 from functools import lru_cache
@@ -8,7 +9,9 @@ from world.env.maps.map import Map
 from utils.utils import SE2_kinematics, polygon_SDF, triangle_SDF, SDF_RT, map2display, display2map
 from utils.utils_planner import boundaries
 from world.npc.invader import Invader
+from pathlib import Path
 
+project_root = Path(__file__).resolve().parents[2]
 RAY_TRACING_DEBUG = False
 
 
@@ -53,7 +56,7 @@ class Environment:
         self._frame_index = 0
 
     def reset(self, offset=0):
-        trajectory_file = '/home/joe/Documents/ERL/VisibilityControl/pursuer/planner/Lsj.npz'
+        trajectory_file = os.path.join(project_root, 'resources/Lsj.npz')
         self.invader = Invader(trajectory_file)
         self.invader.start()
 
