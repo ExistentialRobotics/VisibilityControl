@@ -1,0 +1,79 @@
+horizon: 3000
+tau: 0.1
+dt: 0.1
+
+# True if SST planner should be used for control initialization else False
+use_planner: False
+
+# change the name of the map after map/
+map_path: "/home/joe/Documents/ERL/VisibilityControl/world/env/maps/carla_map.png"
+obstacle_path : "data/obstacles_carla.npy"
+
+# diagonal penalty terms for R matrix in control norm objective
+ctrl_penalty_scale_v: 1
+ctrl_penalty_scale_w: 10
+
+#if True, constrain angular vel component of optimal control to within control bounds
+use_omega_constraint: True
+use_lin_vel_constraint: True
+
+# if True, solve using QP solver. If False, use MPC
+QP:
+  use_qp : True
+  use_penalty_smoothing : False
+  pen_smooth_v : 0.1
+  pen_smooth_w : 1
+  alpha_fov : 1
+  alpha_obs : 2
+  # possible values are "direction" (only obstacles in front of the agent are included), "distance" (360 degree obstacle inclusion),
+  # or "all" (all conditions)
+  obs_incl_cond : "distance"
+  use_fov_slack : False
+  slack_delta : -10
+
+Planner:
+  planner_max_time : 1.0
+
+# Old MPC parameters - deprecated
+# K is number of planning steps
+K: 8
+# gradient descent learning rate
+learning_rate: 0.01
+# number of epochs for gradient descent
+epochs: 30
+# loss_type can take values: SDFLoss, SigmoidSDFLoss, IfElseSigmoidSDFLoss, control_norm, quadratic
+loss_type: control_norm
+# sig_k sets the sigmoid fcn hyperparam in exp(-kx); only use with Sigmoid losses
+sig_k: 1
+# additional distance over the FoV radius of agent that the euclidean dist/SDF switch boundary is at
+sig_bdry_r_offset: -20
+# if true, uses only euclidean distance as loss fcn - use to override loss_type above for benchmarking
+use_euclidean_dist: False
+# True if loss function should include quadratic penalty in control deviation from planner reference output; always used for controlNorm loss
+add_control_deviation_penalty: False
+
+# if True, use autodiff for gradients of loss (constraints still use autodiff), else use finite differences
+use_autodiff: False
+
+# if True, use exp(loss); not applicable to Sigmoid loss types
+use_exp_loss: False
+
+# if True, make the SDF polygon rounded
+make_rounded: False
+
+# bounds on angular velocity in rad/s
+omega_lb: -1.0
+omega_ub: 1.0
+v_lb: -0
+v_ub: 60
+
+use_fov_circular: False
+use_control_scaling: False
+w_scale_factor: 1
+FoV:
+  radius: 100
+  psi: 1.0472
+  kappa: 0.4
+
+epsilon_s: 0.2
+render: True
