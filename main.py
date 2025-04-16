@@ -55,7 +55,7 @@ def run_sim(params_filename):
         u_r = ref
         time_init = time.time()
         u, obs = cbf.solvecvx(x, y, ydot, u_r, u)
-        print(time.time() - time_init)
+        print(f"Frame rate: {round(1/(time.time() - time_init))}")
         i = (i + 1) % planner_cd
         env.cv_render(x, y, obs)
     env.close()
