@@ -11,7 +11,6 @@ import torch
 from einops import rearrange
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import Dataset
-from utils.utils_planner import geom2pix
 
 
 def PaddedSequence(batch):
@@ -477,3 +476,24 @@ class PathHardMineDataLoader(Dataset):
                 'anchor': anchor,
                 'labels': labels
             }
+def geom2pix(pos, res=0.05, size=(480, 480)):
+    """
+    Convert geometrical position to pixel co-ordinates. The origin
+    is assumed to be at [image_size[0]-1, 0].
+    :param pos: The (x,y) geometric co-ordinates.
+    :param res: The distance represented by each pixel.
+    :param size: The size of the map image
+    :returns (int, int): The associated pixel co-ordinates.
+    NOTE: The Pixel co-ordinates are represented as follows:
+    (0,0)------ X ----------->|
+    |                         |
+    |                         |
+    |                         |
+    |                         |
+    Y                         |
+    |                         |
+    |                         |
+    v                         |
+    ---------------------------
+    """
+    return np.int16(np.floor(pos[0] / res)), np.int16(size[0] - 1 - np.floor(pos[1] / res))

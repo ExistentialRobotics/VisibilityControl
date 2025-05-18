@@ -16,7 +16,7 @@ from math import sin, cos
 from utils.utils import map2world, world2map, visible_region_omni, polygon_sdf, normalize_angle
 from pursuer.planner.transformer import Models
 from os import path as osp
-from pursuer.planner.eval_model import get_patch
+from pursuer.planner.mpt_tools import get_patch
 from world.env.config import *
 from world.env.maps.map import Map
 
@@ -316,15 +316,6 @@ class PlannerThread:
 
             # run your planner_single; returns (new_start, trajectory, success, actions)
             _, trajectory, success, actions = planner_single(s, g, if_mpt=True, model=self._model)
-            # if success:
-            #     last_success = [trajectory, actions]
-            #     last_success_index = 1
-            # elif last_success_index < len(last_success[0]):
-            #     start = last_success[0][last_success_index]
-            #     start[2] = normalize_angle(start[2])
-            #     actions = last_success[1][last_success_index:]
-            #     last_success_index += 1
-            # store result
             if success:
                 with self._lock:
                     self._result = (trajectory, actions)
@@ -337,24 +328,3 @@ class PlannerThread:
             # brief pause to avoid 100% CPU spin
             time.sleep(self._delay)
 
-
-class Planner:
-    def __init__(self):
-        self.mpt_model = load_model('pursuer/planner/models/final_models/point_robot')
-        self.start = None
-        self.last_success = [[], []]
-        self.last_success_index = 1
-
-    def get_next_state_cbf(self, start, goal):
-        goal = goal.reshape((3,))
-        self.start = start
-        self.start, trajectory, success, actions = planner_single(self.start, goal, if_mpt=False, model=self.mpt_model)
-        if success:
-            self.last_success = [trajectory, actions]
-            self.last_success_index = 1
-        elif self.last_success_index < len(self.last_success[0]):
-            self.start = self.last_success[0][self.last_success_index]
-            self.start[2] = normalize_angle(self.start[2])
-            actions = self.last_success[1][self.last_success_index:]
-            self.last_success_index += 1
-        return trajectory, actions

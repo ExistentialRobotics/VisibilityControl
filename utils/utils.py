@@ -1,19 +1,7 @@
-import pickle
-import socket
 import warnings
 from functools import lru_cache
-
-import matplotlib.pyplot as plt
 import numpy as np
-# from polylabel import polylabel
-from scipy.special import erf
-
 from world.env.config import *
-
-VisionRange = radius
-ViewAngle = psi
-
-global_map = np.zeros((1, 1))
 
 
 def map2world(map_origin, ratio, x_m):
@@ -55,15 +43,6 @@ def normalize_angle(angle):
     return warp_angle
 
 
-def min_distance(alpha, radius):
-    return radius * np.sin(alpha) / (2 + 2 * np.sin(0.5 * alpha))
-
-
-# def min_distance_new(fov_polygon):
-#     center_pos, d_bar = polylabel(fov_polygon, with_distance=True)
-#     return d_bar
-
-
 def vertices_filter(polygon, angle_threshold=0.05):
     diff = polygon[1:] - polygon[:-1]
     diff_norm = np.sqrt(np.einsum('ij,ji->i', diff, diff.T))
@@ -72,45 +51,6 @@ def vertices_filter(polygon, angle_threshold=0.05):
     angle_abs = np.abs(np.arccos(angle_distance))
     minimum_polygon = polygon[[True] + list(angle_abs > angle_threshold) + [True], :]
     return minimum_polygon
-
-
-# def vertices_filter_jnp(polygon, angle_threshold=0.05):
-#     minimum = jnp.zeros(jnp.shape(polygon))
-#     minimum[0] = polygon[0]
-#     counter = 1
-#     diff = polygon[1:] - polygon[:-1]
-#     for i in range(len(diff) - 1):
-#         unit_vector_1 = diff[i] / jnp.linalg.norm(diff[i])
-#         unit_vector_2 = diff[i + 1] / jnp.linalg.norm(diff[i + 1])
-#         dot_product = jnp.dot(unit_vector_1, unit_vector_2)
-#         angle = jnp.arccos(jnp.round(dot_product,5))
-#         if abs(angle) > angle_threshold:
-#             minimum[counter] = polygon[i + 1]
-#             counter += 1
-#     minimum[counter] = polygon[0]
-#     return minimum[0:counter + 1]
-
-def sigmoid(k, x):
-    return 1 / (1 + np.exp(-k * x))
-
-
-def plot_sigmoid_and_grad():
-    pert = 10e-2
-    fig, (ax1, ax2) = plt.subplots(2, 1, sharex='all')
-
-    m = 0.1
-    for i in range(5):
-        arr_x = np.linspace(-5, 5, 101)
-        arr_sigmoid = sigmoid(arr_x, k=m)
-        arr_fd_x = (sigmoid(arr_x + pert, k=m) - sigmoid(arr_x - pert, k=m)) / (2 * pert)
-        ax1.plot(arr_x, arr_sigmoid)
-        ax2.plot(arr_x, arr_fd_x)
-        m += 1
-    ax1.set_ylabel('Sigmoid(x)')
-    ax2.set_ylabel('Gradient of Sigmoid(x)')
-    ax2.set_xlabel('x : Euclidean distance of target from agent (0 is FoV boundary)')
-    fig.suptitle('Sigmoid(x) and gradient as a function of target distance from agent \n and sigmoid parameter k')
-    plt.show()
 
 
 def triangle_SDF(q, psi, r):
@@ -296,21 +236,6 @@ def raytracing(robot_pose, fov, radius, RT_res, world_map):
         xx, yy = DDA(int(x0), int(y0), int(x_mid[i]), int(y_mid[i]), world_map)
         if not pts or (yy != pts[-1][1] or xx != pts[-1][0]): pts.append([xx, yy])
     return pts
-
-
-
-
-
-def dqxdx(x, y):
-    theta = x[2]
-    R = np.array([[np.cos(theta), -np.sin(theta)],
-                  [np.sin(theta), np.cos(theta)]])
-    Rp = np.array([[-np.sin(theta), -np.cos(theta)],
-                   [np.cos(theta), -np.sin(theta)]])
-    Sp = np.array([[1, 0, 0],
-                   [0, 1, 0]])
-    e3 = np.array([[0], [0], [1]])
-    return Rp.T @ Sp @ (x.reshape(3, 1) - y.reshape(3, 1)) @ e3.T + R.T @ Sp
 
 
 def l_function(x, psi, r, p_x):

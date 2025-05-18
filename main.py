@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 from pursuer.controller.cbf_qp import CbfController
-from pursuer.planner.planner_main import Planner, PlannerThread
+from pursuer.planner.planner_main import PlannerThread
 from world.env.simple_env import Environment
 
 project_root = Path(__file__).resolve().parent
@@ -45,31 +45,23 @@ def run_sim(params_filename):
     ref = np.array([[18], [0]])
     u = np.copy(ref)
     cbf = CbfController(env)
-    # mpt = Planner()
     planner = PlannerThread()
     ref_sig = None
     planner_cd = 20
     while not done:
         y, ydot, x = env.update(u)
 
-        planner.set_start_goal(x, y)
-        res = planner.get_result()
-        if res is not None:
-            _, ref_sig = res
-        if ref_sig is not None:
-            u_r = ref_sig[0].reshape(2, 1)
-        else:
-            u_r = ref
-
-        # if i % planner_cd == 0:
-        #     _, ref_sig = mpt.get_next_state_cbf(x, y)
-        # if ref_sig is not None and i < len(ref_sig):
+        u_r = ref
+        # planner.set_start_goal(x, y)
+        # res = planner.get_result()
+        # if res is not None:
+        #     _, ref_sig = res
+        # if ref_sig is not None:
         #     u_r = ref_sig[0].reshape(2, 1)
-        # else:
-        #     u_r = ref
+
         time_init = time.time()
         u, obs = cbf.solvecvx(x, y, ydot, u_r, u)
-        # print(f"Frame rate: {round(1/(time.time() - time_init))}")
+        print(f"Frame rate: {round(1/(time.time() - time_init))}")
         i = (i + 1) % planner_cd
         env.cv_render(x, y, obs)
     env.close()
