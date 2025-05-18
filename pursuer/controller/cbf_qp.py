@@ -2,7 +2,7 @@ import cvxpy as cp
 import numpy as np
 from world.env.config import epsilon_s, alpha_fov, radius
 from world.env.simple_env import Environment
-from utils.utils import display2map, map2display
+from utils.utils import map2world, world2map
 
 
 class CbfController:
@@ -101,10 +101,10 @@ class CbfController:
         return self.crop(u.value), top_1_obstacle
 
     def sample_cbf(self, rbt):
-        rbt_d = map2display(self.env.map_origin, self.env.map_ratio, rbt.reshape((3, 1))).squeeze()
+        rbt_d = world2map(self.env.map_origin, self.env.map_ratio, rbt.reshape((3, 1))).squeeze()
         # minimum vertex polygon function is called inside SDF_RT (raytracing)
         rt_visible = self.env.SDF_RT_circular(rbt_d, 100, 300)
-        scan_w = (display2map(self.env.map_origin, self.env.map_ratio, rt_visible.T)[0:2, :]).T
+        scan_w = (map2world(self.env.map_origin, self.env.map_ratio, rt_visible.T)[0:2, :]).T
         if len(scan_w) == 0: return None
         distances = np.linalg.norm(scan_w - rbt[:2].T, axis=1)
         inner_radius = 0.1

@@ -6,8 +6,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 from world.env.maps.map import Map
-from utils.utils import SE2_kinematics, polygon_SDF, triangle_SDF, SDF_RT, map2display, display2map
-from utils.utils_planner import boundaries
+from utils.utils import SE2_kinematics, polygon_sdf, triangle_SDF, SDF_RT, world2map, map2world
 from world.npc.invader import Invader
 from pathlib import Path
 
@@ -116,9 +115,9 @@ class Environment:
         return pose
 
     def get_visible_region(self, rbt, tgt):
-        rbt_d = map2display(self.map_origin, self.map_ratio, rbt.reshape((3, 1))).squeeze()
+        rbt_d = world2map(self.map_origin, self.map_ratio, rbt.reshape((3, 1))).squeeze()
         rt_visible = SDF_RT(rbt_d, self._psi, self._radius, 50, self._global_map)
-        visible_region = (display2map(self.map_origin, self.map_ratio, rt_visible.T)[0:2, :]).T
+        visible_region = (map2world(self.map_origin, self.map_ratio, rt_visible.T)[0:2, :]).T
         return visible_region
 
     def get_polygon_from_rays(self, arr_rays):
@@ -135,11 +134,11 @@ class Environment:
         return np.array([df_dx, df_dy, df_dt])
 
     def sdf(self, rbt, tgt):
-        rbt_d = map2display(self.map_origin, self.map_ratio, rbt.reshape((3, 1))).squeeze()
+        rbt_d = world2map(self.map_origin, self.map_ratio, rbt.reshape((3, 1))).squeeze()
         # minimum vertex polygon function is called inside SDF_RT (raytracing)
         rt_visible = SDF_RT(rbt_d, self._psi, self._radius, 50, self._global_map)
-        visible_region = (display2map(self.map_origin, self.map_ratio, rt_visible.T)[0:2, :]).T
-        return polygon_SDF(visible_region, tgt[0:2])
+        visible_region = (map2world(self.map_origin, self.map_ratio, rt_visible.T)[0:2, :]).T
+        return polygon_sdf(visible_region, tgt[0:2])
 
 
     def grad_sdf_circular(self, rbt, tgt):
@@ -161,11 +160,11 @@ class Environment:
         #     [[r * np.cos(2 * np.pi * i / N), r * np.sin(2 * np.pi * i / N), -delta_theta] for i in range(1, N + 1)])
         # delta_x = np.vstack([delta_x_shift, delta_x_ccw, delta_x_cw])
         #
-        rbt_d = map2display(self.map_origin, self.map_ratio, rbt.reshape((3, 1))).squeeze()
+        rbt_d = world2map(self.map_origin, self.map_ratio, rbt.reshape((3, 1))).squeeze()
         rt_visible = SDF_RT(rbt_d, self._psi, self._radius, 50, self._global_map)
-        visible_region = (display2map(self.map_origin, self.map_ratio, rt_visible.T)[0:2, :]).T
+        visible_region = (map2world(self.map_origin, self.map_ratio, rt_visible.T)[0:2, :]).T
 
-        SDF_center = polygon_SDF(visible_region, tgt[0:2])
+        SDF_center = polygon_sdf(visible_region, tgt[0:2])
         # X = delta_x
         # Y = np.zeros((X.shape[0], 1))
         Z = delta_x_shift[:, 0:2]
@@ -181,20 +180,20 @@ class Environment:
         grad_est = self.new_fd_grad(rbt, tgt)
 
         for index, dy in enumerate(Z):
-            W[index, 0] = polygon_SDF(visible_region, tgt[0:2] + dy) - SDF_center
+            W[index, 0] = polygon_sdf(visible_region, tgt[0:2] + dy) - SDF_center
         grad_est_y = -np.linalg.inv(Z.T @ Z) @ Z.T @ W
         return grad_est.reshape(3, ) + 1e-10, np.hstack([grad_est_y.reshape(2, ) + 1e-10, [0]]), SDF_center
 
     def cv_render(self, rbt, tgt, obs):
-        tgt_d = map2display(self.map_origin, self.map_ratio, tgt.reshape((3, 1))).squeeze()
+        tgt_d = world2map(self.map_origin, self.map_ratio, tgt.reshape((3, 1))).squeeze()
 
-        rbt_cvx_d = map2display(self.map_origin, self.map_ratio, rbt.reshape((3, 1))).squeeze()
+        rbt_cvx_d = world2map(self.map_origin, self.map_ratio, rbt.reshape((3, 1))).squeeze()
         rt_visible = SDF_RT(rbt_cvx_d, self._psi, self._radius, 50, self._global_map)
-        visible_region_cvx = (display2map(self.map_origin, self.map_ratio, rt_visible.T)[0:2, :]).T
-        SDF_center_cvx = polygon_SDF(visible_region_cvx, tgt[0:2])
+        visible_region_cvx = (map2world(self.map_origin, self.map_ratio, rt_visible.T)[0:2, :]).T
+        SDF_center_cvx = polygon_sdf(visible_region_cvx, tgt[0:2])
 
         if obs is not None:
-            obs_d = map2display(self.map_origin, self.map_ratio, np.hstack((obs, np.array([0]))).reshape((3, 1))).squeeze()
+            obs_d = world2map(self.map_origin, self.map_ratio, np.hstack((obs, np.array([0]))).reshape((3, 1))).squeeze()
         else:
             obs_d = None
 
@@ -283,11 +282,8 @@ class Environment:
 
     def raytracing_circular(self, robot_pose, fov, radius, RT_res):
         x0, y0, theta = robot_pose
-        out_1, out_2 = boundaries(robot_pose, fov, radius)
         y_mid = [y0 + radius * np.sin(theta - 0.5 * fov + i * fov / RT_res) for i in range(RT_res + 1)]
         x_mid = [x0 + radius * np.cos(theta - 0.5 * fov + i * fov / RT_res) for i in range(RT_res + 1)]
-        # y_mid = np.linspace(out_1[1], out_2[1], RT_res)
-        # x_mid = np.linspace(out_1[0], out_2[0], RT_res)
         pts = []
         for i in range(len(x_mid)):
             xx, yy = self.DDA(int(x0), int(y0), int(x_mid[i]), int(y_mid[i]))

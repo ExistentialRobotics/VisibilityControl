@@ -4,7 +4,7 @@ Dervied from: https://github.com/usuyama/pytorch-unet/blob/master/pytorch_unet.p
 
 import torch.nn as nn
 
-from robot.planner.unet.Layers import DoubleConv, Down, Up, OutConv
+from pursuer.planner.unet.Layers import DoubleConv, Down, Up, OutConv
 
 
 class UNet(nn.Module):

@@ -2,7 +2,7 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-from utils.utils import map2display
+from utils.utils import world2map
 
 MAP_HEIGHT = 980
 MAP_WIDTH = 976
@@ -26,7 +26,7 @@ map_origin = np.array([[MAP_HEIGHT // 2], [MAP_WIDTH // 2], [np.pi / 2]])
 
 for obstacle in obstacles:
     # project the world frame obstacle vertex coordinates to the pixel frame
-    obs_disp = np.array([map2display(map_origin, map_ratio, vertex.reshape(3,1)) for vertex in obstacle])
+    obs_disp = np.array([world2map(map_origin, map_ratio, vertex.reshape(3, 1)) for vertex in obstacle])
     obs_disp = obs_disp[:,0:2].reshape((-1,1,2)).astype(np.int32)
     # fill in the polygon given the vertices
     cv2.fillPoly(_map, [obs_disp], color=(255,0,0))

@@ -19,10 +19,10 @@ try:
 except ImportError:
     raise ImportError("Container does not have OMPL installed")
 
-from robot.planner.transformer import Models as tfModel
-from robot.planner.unet import Models as unetModel
+from pursuer.planner.transformer import Models as tfModel
+from pursuer.planner.unet import Models as unetModel
 from utils.utils_planner import geom2pix, ValidityChecker
-from robot.planner.dataLoader import get_encoder_input
+from pursuer.planner.dataLoader import get_encoder_input
 
 res = 1
 

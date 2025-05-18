@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.utils.checkpoint
 from einops import rearrange
 from einops.layers.torch import Rearrange
-from robot.planner.transformer.Layers import EncoderLayer, DecoderLayer
+from pursuer.planner.transformer.Layers import EncoderLayer, DecoderLayer
 
 
 # TODO: A better way to do this would be maintain the position encoding in the form of

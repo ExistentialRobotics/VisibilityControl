@@ -59,7 +59,7 @@ res = 0.05  # meter/pixels
 X = np.arange(4, 24 * 20 + 4, 20) * res
 Y = 24 - np.arange(4, 24 * 20 + 4, 20) * res
 
-grid_2d = np.meshgrid(X, Y)
+grid_2d = list(np.meshgrid(X, Y))
 grid_points = rearrange(grid_2d, 'c h w->(h w) c')
 hashTable = [(20 * r + 4, 20 * c + 4) for c in range(24) for r in range(24)]
 
