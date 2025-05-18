@@ -36,6 +36,7 @@ class Invader:
             with self.lock:
                 self.current_state = self.trajectory[self.current_index]
                 self.current_index += 1
+                self.current_index = self.current_index % len(self.trajectory)
             time.sleep(1.0 / self.update_rate)
 
     def get_pose(self):
