@@ -3,8 +3,10 @@
 ## Overview
 [Project link](https://existentialrobotics.org/VisibilityControl/)
 
-## Models
+## Models (Optional)
 The MPT models included here are pretrained from the work described in [Motion Planning Transformer](https://arxiv.org/abs/2106.02791). These models will be placed under `pursuer/planner/models` during the setup process.
+
+The Motion Planning Transformers code base is currently for reviewing purpose alone. Please do not distribute.
 
 ## Setup
 1. Ensure Anaconda (or Miniconda) is installed on your system and available in your terminal.

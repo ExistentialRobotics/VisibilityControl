@@ -167,8 +167,10 @@ def get_path(start, goal, sim_map, mpt_mask, step_time=0.1, max_time=300.):
     ss.getSpaceInformation().setPropagationStepSize(0.2)
     ss.getSpaceInformation().setMinMaxControlDuration(5, 5)
 
-    # planner = oc.SST(ss.getSpaceInformation())
-    planner = oc.RRT(ss.getSpaceInformation())
+    if base_planner == 'SST':
+        planner = oc.SST(ss.getSpaceInformation())
+    else:
+        planner = oc.RRT(ss.getSpaceInformation())
 
     ss.setPlanner(planner)
     time = step_time
@@ -248,8 +250,7 @@ def planner_single(start, goal, if_mpt=False, model=None):
 
 
 class PlannerThread:
-    def __init__(self, model_path='pursuer/planner/models/final_models/point_robot',
-                 loop_delay: float = 0.01):
+    def __init__(self, model_path, loop_delay: float = 0.01):
         """
         model_path   Path to your transformer model
         loop_delay   Seconds to sleep between planning attempts
@@ -315,7 +316,7 @@ class PlannerThread:
                 g = self._goal
 
             # run your planner_single; returns (new_start, trajectory, success, actions)
-            _, trajectory, success, actions = planner_single(s, g, if_mpt=True, model=self._model)
+            _, trajectory, success, actions = planner_single(s, g, if_mpt=mpt_enable, model=self._model)
             if success:
                 with self._lock:
                     self._result = (trajectory, actions)

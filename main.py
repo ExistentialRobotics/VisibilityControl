@@ -1,17 +1,13 @@
 import argparse
-import os
-import signal
 import sys
 import time
 
 import matplotlib.pyplot as plt
 import numpy as np
-import yaml
-from pathlib import Path
 
-
+from world.env.config import *
 from pursuer.controller.cbf_qp import CbfController
-from pursuer.planner.planner_main import PlannerThread
+from pursuer.planner.planner import PlannerThread
 from world.env.simple_env import Environment
 
 project_root = Path(__file__).resolve().parent
@@ -20,20 +16,8 @@ parser = argparse.ArgumentParser()
 args = parser.parse_args()
 
 
-def run_sim(params_filename):
-    assert os.path.exists(params_filename)
-    with open(os.path.join(params_filename)) as f:
-        params = yaml.load(f, Loader=yaml.FullLoader)
-
-    horizon = params['horizon']
-    tau = params['tau']
-    radius = params['FoV']['radius']
-    psi = params['FoV']['psi']
-    epsilon_s = params['epsilon_s']
-    render = params['render']
-
-    env = Environment(horizon=horizon, tau=tau, psi=psi, radius=radius, epsilon_s=epsilon_s)
-
+def run_sim():
+    env = Environment(tau=tau, psi=psi, radius=radius, epsilon_s=epsilon_s)
     env.reset()
     done = False
     x_record = []
@@ -45,19 +29,20 @@ def run_sim(params_filename):
     ref = np.array([[18], [0]])
     u = np.copy(ref)
     cbf = CbfController(env)
-    planner = PlannerThread()
+    planner = PlannerThread(model_path=mpt_model_path)
     ref_sig = None
     planner_cd = 20
     while not done:
         y, ydot, x = env.update(u)
 
         u_r = ref
-        # planner.set_start_goal(x, y)
-        # res = planner.get_result()
-        # if res is not None:
-        #     _, ref_sig = res
-        # if ref_sig is not None:
-        #     u_r = ref_sig[0].reshape(2, 1)
+        if use_planner:
+            planner.set_start_goal(x, y)
+            res = planner.get_result()
+            if res is not None:
+                _, ref_sig = res
+            if ref_sig is not None:
+                u_r = ref_sig[0].reshape(2, 1)
 
         time_init = time.time()
         u, obs = cbf.solvecvx(x, y, ydot, u_r, u)
@@ -79,4 +64,4 @@ def run_sim(params_filename):
 
 
 if __name__ == '__main__':
-    run_sim(params_filename=os.path.join(project_root, 'params/params_compare.yaml'))
+    run_sim()

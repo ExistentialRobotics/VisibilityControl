@@ -15,7 +15,7 @@ RAY_TRACING_DEBUG = False
 
 
 class Environment:
-    def __init__(self, horizon, tau, psi, radius, epsilon_s):
+    def __init__(self, tau, psi, radius, epsilon_s):
         self.fps_timer = time.time()
         self.tgt_spd = None
         self.sim_tick = None
@@ -35,19 +35,16 @@ class Environment:
         self._tgt = None
         self._omega = None
         self._mu_real = None
-        self._horizon = horizon
         self._env_size = None
         self._theta_real = None
         self._epsilon_s = epsilon_s
-        self._tau = tau
-
         self._mu = None
         self._v = None
         self._landmark_motion_bias = None
         self._rbt = None
-
         self._psi = psi
         self._radius = radius
+        self._tau = tau
         # r is radius for circular FoV centred at agent position
         self.r = 30
         # self.out_2D = cv2.VideoWriter('../2D.avi', fourcc, 15.0, (976, 780))
