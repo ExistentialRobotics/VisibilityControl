@@ -23,7 +23,7 @@ After running `setup.sh`, activate the environment:
 
 You can then run:
 `python main.py`
-to start the simulation.
+to start the simulation, and press `q` to quit simulation.
 
 ## Notes
 - If `gdown` is missing, the script installs it automatically to facilitate model downloads.

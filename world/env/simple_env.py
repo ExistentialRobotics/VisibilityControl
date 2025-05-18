@@ -207,7 +207,7 @@ class Environment:
         visible_map = visible_map[100:-100, :, :]
         cv2.imshow('debugging', visible_map)
         self.fps_timer = time.time()
-        key = cv2.waitKey(1) & 0xFF
+        key = (cv2.waitKey(1) & 0xFF) == ord('q')
         return key
 
     def update(self, action):

@@ -48,7 +48,7 @@ def run_sim():
         u, obs = cbf.solvecvx(x, y, ydot, u_r, u)
         print(f"Frame rate: {round(1/(time.time() - time_init))}")
         i = (i + 1) % planner_cd
-        env.cv_render(x, y, obs)
+        done = env.cv_render(x, y, obs)
     env.close()
     if not render:
         y_record = np.array(y_record)
