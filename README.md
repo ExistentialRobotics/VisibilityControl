@@ -42,8 +42,8 @@ If you find this work useful, please cite it as follows:
 ```bibtex
 @inproceedings{Zhou2025VisibilityControl,
 	author = {Minnan Zhou and Mustafa Shaikh and Vatsalya Chaubey and Patrick Haggerty and Shumon Koga and Dimitra Panagou and Nikolay Atanasov},
-  title = {Control Strategies for Pursuit-Evasion Under Occlusion Using Visibility and Safety Barrier Functions},
+	title = {Control Strategies for Pursuit-Evasion Under Occlusion Using Visibility and Safety Barrier Functions},
 	booktitle = {IEEE International Conference on Robotics and Automation (ICRA)},
-  year = {2025}
+	year = {2025}
 }
 ```
