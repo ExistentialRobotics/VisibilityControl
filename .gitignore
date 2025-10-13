@@ -1,1 +1,4 @@
 /pursuer/planner/models/final_models/
+carla/*
+!carla/Env02.zip
+!carla/installation.sh
