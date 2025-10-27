@@ -1,83 +1,42 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# install_carla_ros_bridge_ros2.sh
+# Follows: https://carla.readthedocs.io/projects/ros-bridge/en/latest/ros_installation_ros2/
+pip install empy==3.3.4
+pip install catkin_pkg
+pip install lark
+ROS_DISTRO="humble"
+WS=carla-ros-bridge
+ROS_SETUP="/opt/ros/${ROS_DISTRO}/setup.bash"
 
-echo "=========================================="
-echo "  CARLA ROS Bridge Installation"
-echo "=========================================="
+# Optionally pass the absolute path to your CARLA *.egg as $1
+CARLA_EGG="${1:-}"
 
-# Check if ROS2 Humble is installed
-if [ ! -f /opt/ros/humble/setup.bash ]; then
-  echo "Error: ROS2 Humble not found. Please run install_ros2.sh first." >&2
-  exit 1
+# Source ROS 2
+source "${ROS_SETUP}"
+
+# Create workspace
+mkdir -p "${WS}/src"
+cd "${WS}"
+
+# Clone ros-bridge with submodules (per docs)
+if [[ ! -d src/ros-bridge ]]; then
+  git clone --recurse-submodules https://github.com/carla-simulator/ros-bridge.git src/ros-bridge
 fi
 
-# Check if conda environment erl_vc is active
-if [ -z "${CONDA_DEFAULT_ENV:-}" ] || [ "$CONDA_DEFAULT_ENV" != "erl_vc" ]; then
-  echo "Error: Please activate conda environment 'erl_vc' first:" >&2
-  echo "  conda activate erl_vc" >&2
-  exit 1
-fi
+# Resolve dependencies
+rosdep update
+rosdep install --from-paths src --ignore-src -r -y
+sed -i 's|#include <tf2_eigen/tf2_eigen.h>|#include <tf2_eigen/tf2_eigen/tf2_eigen.hpp>|' src/ros-bridge/pcl_recorder/include/PclRecorderROS2.h
+sed -i 's|0.9.13|0.9.14|' src/ros-bridge/carla_ros_bridge/src/carla_ros_bridge/CARLA_VERSION
+# Build
+colcon build
 
-echo "[1/5] Sourcing ROS2 Humble environment..."
-source /opt/ros/humble/setup.bash
+# Setup environment
+source install/setup.bash
+sed -i 's|numpy.bool|numpy.bool_|' install/carla_ros_bridge/lib/python3.10/site-packages/carla_ros_bridge/camera.py
+sed -i 's|self.get_topic_prefix()|self.get_topic_prefix()+"_pcl2"|' install/carla_ros_bridge/lib/python3.10/site-packages/carla_ros_bridge/lidar.py
+sed -i 's|self.get_topic_prefix()|self.get_topic_prefix()+"_collision"|' install/carla_ros_bridge/lib/python3.10/site-packages/carla_ros_bridge/collision_sensor.py
+sed -i 's|self.get_topic_prefix()|self.get_topic_prefix()+"_imu"|' install/carla_ros_bridge/lib/python3.10/site-packages/carla_ros_bridge/imu.py
 
-echo "[2/5] Installing ROS2 system dependencies..."
-sudo apt update
-sudo apt install -y \
-  ros-humble-cv-bridge \
-  ros-humble-vision-opencv \
-  ros-humble-pcl-conversions \
-  ros-humble-ackermann-msgs \
-  ros-humble-derived-object-msgs
-
-# Install CARLA Python API (matching CARLA version 0.9.14)
-CARLA_VERSION="0.9.14"
-CARLA_EGG="carla-${CARLA_VERSION}-py3.7-linux-x86_64.egg"
-CARLA_ROOT="$(pwd)/CARLA_${CARLA_VERSION}"
-
-if [ -d "$CARLA_ROOT" ]; then
-  echo "[3/5] Installing CARLA Python API from $CARLA_ROOT..."
-  if [ -f "$CARLA_ROOT/PythonAPI/carla/dist/$CARLA_EGG" ]; then
-    pip install "$CARLA_ROOT/PythonAPI/carla/dist/$CARLA_EGG"
-    echo "CARLA Python API installed to conda environment"
-  else
-    echo "Warning: CARLA Python egg not found at $CARLA_ROOT/PythonAPI/carla/dist/$CARLA_EGG" >&2
-    echo "Skipping CARLA Python API installation. Install manually if needed." >&2
-  fi
-else
-  echo "[3/5] CARLA installation not found at $CARLA_ROOT"
-  echo "Skipping CARLA Python API installation. Install after running install_carla.sh" >&2
-fi
-
-# Create workspace for carla-ros-bridge
-WORKSPACE_DIR="$HOME/carla_ros_ws"
-
-echo "[4/5] Setting up carla-ros-bridge workspace at $WORKSPACE_DIR..."
-mkdir -p "$WORKSPACE_DIR/src"
-cd "$WORKSPACE_DIR/src"
-
-if [ -d "ros-bridge" ]; then
-  echo "Repository already exists, pulling latest changes..."
-  cd ros-bridge
-  git pull
-  cd ..
-else
-  git clone --recurse-submodules https://github.com/carla-simulator/ros-bridge.git
-fi
-
-echo "[5/5] Building carla-ros-bridge with colcon..."
-cd "$WORKSPACE_DIR"
-source /opt/ros/humble/setup.bash
-colcon build --symlink-install
-
-echo ""
-echo "=========================================="
-echo "  CARLA ROS Bridge Installation Complete!"
-echo "=========================================="
-echo ""
-echo "Workspace: $WORKSPACE_DIR"
-echo ""
-echo "To use the bridge (with conda env 'erl_vc' activated):"
-echo "  source /opt/ros/humble/setup.bash"
-echo "  source $WORKSPACE_DIR/install/setup.bash"
-echo ""
+# Run
+# ros2 launch carla_ros_bridge carla_ros_bridge_with_example_ego_vehicle.launch.py town:=Env02 fixed_delta_seconds:=0.0

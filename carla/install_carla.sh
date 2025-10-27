@@ -47,6 +47,8 @@ EditorStartupMap=/Game/Env02/Maps/Env02/Env02.Env02
 GameDefaultMap=/Game/Env02/Maps/Env02/Env02.Env02
 EOF
 
+sudo apt update
+sudo apt install -y libomp5
 echo "[6/6] All done."
 echo "To launch: cd \"$CARLA_ROOT\" && ./CarlaUE4.sh"
 
