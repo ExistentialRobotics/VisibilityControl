@@ -6,5 +6,9 @@ pyyaml~=6.0.2
 opencv-python~=4.10
 pytz>=2020.1
 
+# CARLA and ROS Bridge dependencies
+pygame>=2.0.0
+networkx>=2.5
+simple-watchdog-timer>=0.1.0
 
 torch~=2.7.0
