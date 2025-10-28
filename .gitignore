@@ -2,3 +2,4 @@
 carla/*
 !carla/Env02.zip
 !carla/*.sh
+!carla/configs
