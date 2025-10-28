@@ -97,30 +97,10 @@ else
   exit 1
 fi
 
+cp -r ../pursuer/planner/models/final_models cbf_ros/robot/planner/models
+
 echo ""
 echo "=========================================="
-echo "  ✓ All Installations Complete!"
+echo "    All Installations Complete!"
 echo "=========================================="
-echo ""
-echo "Summary:"
-echo "  - CARLA Simulator: $SCRIPT_DIR/CARLA_0.9.14"
-echo "  - ROS2 Humble: /opt/ros/humble"
-echo "  - CARLA ROS Bridge: ~/carla_ros_ws"
-echo ""
-echo "Next Steps:"
-echo "  1. Source ROS2 setup:"
-echo "     source /opt/ros/humble/setup.bash"
-echo ""
-echo "  2. Source CARLA ROS Bridge workspace:"
-echo "     source ~/carla_ros_ws/install/setup.bash"
-echo ""
-echo "  3. Launch CARLA simulator:"
-echo "     cd $SCRIPT_DIR/CARLA_0.9.14 && ./CarlaUE4.sh"
-echo ""
-echo "  4. In another terminal (with conda env and ROS2 sourced):"
-echo "     ros2 launch carla_ros_bridge carla_ros_bridge.launch.py"
-echo ""
-echo "Consider adding to ~/.bashrc:"
-echo "  echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc"
-echo "  echo 'source ~/carla_ros_ws/install/setup.bash' >> ~/.bashrc"
 echo ""

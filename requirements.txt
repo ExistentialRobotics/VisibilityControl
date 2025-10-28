@@ -12,3 +12,4 @@ networkx>=2.5
 simple-watchdog-timer>=0.1.0
 
 torch~=2.7.0
+transforms3d

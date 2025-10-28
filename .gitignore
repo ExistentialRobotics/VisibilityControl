@@ -3,3 +3,8 @@ carla/*
 !carla/Env02.zip
 !carla/*.sh
 !carla/configs
+!carla/cbf_ros
+/carla/cbf_ros/robot/planner/models/final_models/
+/carla/cbf_ros/target_publisher/build/
+/carla/cbf_ros/target_publisher/install/
+/carla/cbf_ros/target_publisher/log/
