@@ -3,7 +3,8 @@ import os
 
 
 path_robot = '/home/ubuntu/cbf/params/params_compare.yaml'
-path_local = '/home/joe/Documents/Bringups/carla-ros-cbf/carla_ros_cbf/params/params_compare.yaml'
+path = os.path.dirname(os.path.abspath(__file__))
+path_local = path+'/../params/params_compare.yaml'
 # assert os.path.exists(params_filename)
 with open(path_local) as f:
     params = yaml.load(f, Loader=yaml.FullLoader)

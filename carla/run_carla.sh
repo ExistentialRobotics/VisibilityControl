@@ -15,7 +15,10 @@ fi
 
 source cbf_ros/target_publisher/install/setup.bash
 source ~/anaconda3/etc/profile.d/conda.sh
+conda activate erl_vc
 mkdir -p logs
+export PYTHONPATH=$CONDA_PREFIX/lib/python3.10/site-packages:$PYTHONPATH
+export PATH=$CONDA_PREFIX/bin:$PATH
 
 # Array to hold process IDs of background jobs
 PIDS=()
@@ -81,7 +84,7 @@ check_process $DEPTHIMAGE_TO_LASERSCAN_PID "Depthimage to Laserscan"
 
 # Run SLAM Toolbox
 echo "Starting SLAM Toolbox..."
-ros2 launch slam_toolbox online_sync_launch.py > logs/slam_toolbox.log 2>&1 &
+ros2 launch slam_toolbox online_sync_launch.py slam_params_file:=carla/configs/mapper_params_online_sync.yaml > logs/slam_toolbox.log 2>&1 &
 SLAM_TOOLBOX_PID=$!
 PIDS+=($SLAM_TOOLBOX_PID)
 sleep 2
@@ -89,7 +92,7 @@ check_process $SLAM_TOOLBOX_PID "SLAM Toolbox"
 
 # Run Target Publisher
 echo "Starting Target Publisher..."
-python3 /home/joe/Documents/Bringups/carla-ros-cbf/carla_ros_cbf/target_pub.py > logs/target_publisher.log 2>&1 &
+python3 cbf_ros/target_pub.py > logs/target_publisher.log 2>&1 &
 TARGET_PUBLISHER=$!
 PIDS+=($TARGET_PUBLISHER)
 sleep 2

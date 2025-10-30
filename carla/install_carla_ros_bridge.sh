@@ -40,10 +40,10 @@ sed -i 's|self.get_topic_prefix()|self.get_topic_prefix()+"_imu"|' install/carla
 
 # Run
 # ros2 launch carla_ros_bridge carla_ros_bridge_with_example_ego_vehicle.launch.py town:=Env02 fixed_delta_seconds:=0.0
-ros2 run depthimage_to_laserscan depthimage_to_laserscan_node \
-  --ros-args \
-  -r depth:=/carla/ego_vehicle/depth_front/image \
-  -r depth_camera_info:=/carla/ego_vehicle/depth_front/camera_info \
-  --params-file carla/configs/param.yaml
+#ros2 run depthimage_to_laserscan depthimage_to_laserscan_node \
+#  --ros-args \
+#  -r depth:=/carla/ego_vehicle/depth_front/image \
+#  -r depth_camera_info:=/carla/ego_vehicle/depth_front/camera_info \
+#  --params-file carla/configs/param.yaml
 # ros2 launch slam_toolbox online_sync_launch.py slam_params_file:=carla/configs/mapper_params_online_sync.yaml
 # ros2 run tf2_ros static_transform_publisher 2 0 2 0 0 0 ego_vehicle camera_link

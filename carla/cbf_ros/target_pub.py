@@ -82,11 +82,12 @@ class CarlaVehicleSpawner(Node):
 
 
 def main(args=None):
+    import os
     # Initialize ROS2 node
     rclpy.init(args=args)
-
+    path = os.path.dirname(os.path.abspath(__file__))
     # Load trajectory and run the vehicle spawner
-    trajectory_file = '/home/joe/Documents/Bringups/carla-ros-cbf/carla_ros_cbf/robot/planner/Lsj.npz'  # Replace with your npz file path
+    trajectory_file = path + '/robot/planner/Lsj.npz'  # Replace with your npz file path
     vehicle_spawner = CarlaVehicleSpawner(trajectory_file)
 
     try:

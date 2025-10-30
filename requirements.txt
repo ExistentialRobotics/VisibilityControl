@@ -1,11 +1,12 @@
+numpy==1.24
 cvxpy==1.6.4
 matplotlib~=3.10.1
-numpy>=1.24
 scipy>=1.10
 pyyaml~=6.0.2
-opencv-python~=4.10
+opencv-python
 pytz>=2020.1
-
+einops
+scikit-image
 # CARLA and ROS Bridge dependencies
 pygame>=2.0.0
 networkx>=2.5
@@ -13,3 +14,7 @@ simple-watchdog-timer>=0.1.0
 
 torch~=2.7.0
 transforms3d
+tf_transformations
+
+./carla/configs/carla-0.9.14-cp310-cp310-linux_x86_64.whl
+https://github.com/kylc/ompl-wheels/releases/download/prerelease/ompl-1.6.0-cp310-cp310-manylinux_2_28_x86_64.whl

@@ -39,6 +39,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-a
 echo "[5/6] Updating package index and installing ROS2 Humble Desktop..."
 sudo apt update
 sudo apt install -y ros-humble-desktop
+sudo apt install -y ros-humble-slam-toolbox
 
 echo "[6/6] Installing ROS2 development tools..."
 sudo apt install -y \
